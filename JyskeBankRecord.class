@@ -1,0 +1,18 @@
+<?php
+
+
+
+abstract class JyskeBankRecord {
+  private $type;
+  
+  // Unix timestamp 
+  private $date;
+  
+  
+  public function __construct($date = NULL) {
+    $this->date = $date ? $date : time(); 
+  }
+  public function generateLines() {
+    
+  }
+}
