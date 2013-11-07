@@ -3,29 +3,22 @@
 define('JYSKEBANK_DOMESTIC_TRANSACTION_RECORD_FROM_FINANCE_ACCOUNT', 1);
 define('JYSKEBANK_DOMESTIC_TRANSACTION_RECORD_FROM_BANK_ACCOUNT', 2);
 
-abstract class JyskeBankTransactionRecord implements JyskeBankRecord {
-  private $fromType;
-  private $fromAccount;
+abstract class JyskeBankTransactionRecord extends JyskeBankRecord {
+  protected $fromType;
+  protected $fromAccount;
+  protected $fromReg;
 
-  private $entryText;
-  private $name;
-  private $reference;
-  private $message;
+  protected $entryText;
+  protected $name;
+  protected $reference;
+  protected $message;
 
   
   // ISO 4217
-  private $currency;
+  protected $currency;
   
   // Float
-  private $amount;
-  
-  // Unix timestamp 
-  private $date;
-  
-  
-  public function __construct($date) {
-    $this->date = $date;
-  }
+  protected $amount;
   
   abstract public function setRecipient($name, $data);
   
@@ -52,9 +45,15 @@ abstract class JyskeBankTransactionRecord implements JyskeBankRecord {
     return $this;
   }
   
-  public function setSource($account, $type = JYSKEBANK_DOMESTIC_TRANSACTION_RECORD_FROM_BANK_ACCOUNT) {
+  public function setEntryText($entryText) {
+    $this->entryText = $entryText;
+    return $this;
+  }
+
+  public function setSource($reg, $account, $type = JYSKEBANK_DOMESTIC_TRANSACTION_RECORD_FROM_BANK_ACCOUNT) {
     $this->fromType = $type;
-    $this->fromAccount = $type;
+    $this->fromReg = $reg;
+    $this->fromAccount = $account;
     return $this;
   }  
   
