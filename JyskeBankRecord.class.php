@@ -60,7 +60,75 @@ abstract class JyskeBankRecord {
   }
 
   protected function formatText($text) {
-    $string = utf8_decode($text);
+    //$string = utf8_decode($text);
+    $string = iconv('UTF-8' ,'WINDOWS-1252' ,$string);
     return $string;
+  }
+
+  protected function fitRecordLines($string, $linecount, $linelength) {
+    // Convert to ANSI.
+    //$string = utf8_decode($string);
+    $string = iconv('UTF-8' ,'WINDOWS-1252' ,$string);
+    // Split into lines.
+    $lines = explode("\n", $string);
+    $result_lines = array();
+    foreach ($lines as $index => $line) {
+      // Line is too long.
+      if (strlen($line) > $linelength) {
+        // Split into words.
+        $words = explode(' ', $line);
+        // Add words to lines.
+        do {
+          $lineArr = array();
+          // Split words longer than line length.
+          while ($words && strlen($words[0]) > $linelength) {
+            // Remove long word from list.
+            $word = array_shift($words);
+            $pos = floor(strlen($word) / $linelength) * $linelength;
+            // Cut the word into pieces.
+            $part = substr($word, $pos);
+            $word = substr($word, 0, $pos);
+            // Re-insert pieces.
+            array_unshift($words, $part);
+            array_unshift($words, $word);
+          }
+          // Fill up each line with words.
+          while ($words && strlen(implode(' ', array_merge($lineArr, array($words[0])))) <= $linelength) {
+            $lineArr[] = array_shift($words);
+            $line = implode(' ', $lineArr);
+          }
+          $line = implode(' ', $lineArr);
+          $result_lines[] = $line;
+          // Return when number of lines have been reached.
+          if (count($result_lines) == $linecount) {
+            return $result_lines;
+          }
+        }
+        while ($words);
+      }
+      // Just add lines shorter than limit.
+      else {
+        $result_lines[] = $line;
+        // Return when number of lines have been reached.
+        if (count($result_lines) == $linecount) {
+          return $result_lines;
+        }
+      }
+    }
+    // Add empty lines.
+    while (count($result_lines) < $linecount) {
+      $result_lines[] = '';
+    }
+    return $result_lines;
+  }
+  
+  protected function recordLinesLength($linedata) {
+    $length = 0;
+    foreach ($linedata as $index => $line) {
+      if (trim($line)) {
+        $length = $index+1;
+      }
+    }
+    return $length;
   }
 }
