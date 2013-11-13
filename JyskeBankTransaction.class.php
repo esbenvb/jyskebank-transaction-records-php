@@ -12,18 +12,21 @@ class JyskeBankTransaction {
   public function __construct($date = NULL) {
     $this->date = $date ? $date : time();
   }
-  
+
+  // Set the source and destination encodings.
   public function setEncoding($source, $destination) {
     $this->sourceEncoding = $source;
     $this->destinationEncoding = $destination;
   }
 
+  // Add a record to the transaction.
   public function addRecord(JyskeBankTransactionRecord $record) {
     $record->setTransaction($this);
     array_push($this->records, $record);
     return $this;
   }
   
+  // Finishes the transaction by calculating stats etc.
   public function finish() {
     $this->header = new JyskeBankTransactionHeader($this->date);
     foreach ($this->records as $record) {
@@ -33,6 +36,7 @@ class JyskeBankTransaction {
     return $this;
   }
   
+  // Export the transaction data into a string used for the file.
   public function export() {
     $lines = array();
     $lines = array_merge($lines, $this->header->generateLines());

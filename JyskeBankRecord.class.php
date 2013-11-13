@@ -1,6 +1,4 @@
 <?php
-
-
 abstract class JyskeBankRecord {
   protected $type;
   
@@ -20,6 +18,7 @@ abstract class JyskeBankRecord {
     $this->transaction = $transaction;
   }
 
+  // Generates the line entries for the record.
   public function generateLines() {
     $structure = $this->recordStructure();
     $lines = array();
@@ -38,6 +37,7 @@ abstract class JyskeBankRecord {
     return date('Ymd', $timestamp);
   }
 
+  // Fills a field with padding or cuts it to the max length.
   protected function fillField($item) {
     switch ($item['type']) {
       case 'text':
@@ -70,8 +70,9 @@ abstract class JyskeBankRecord {
     return iconv($this->transaction->sourceEncoding, $this->transaction->destinationEncoding, $text);
   }
 
+  // Makes a long multi-line string fit into the specified limits.
   protected function fitRecordLines($string, $linecount, $linelength) {
-    // Convert to ANSI.
+    // Convert charset.
     $string = $this->formatText($string);
     // Split into lines.
     $lines = explode("\n", $string);
@@ -126,6 +127,7 @@ abstract class JyskeBankRecord {
     return $result_lines;
   }
   
+  // Determines the actual length of a multi-line text record.
   protected function recordLinesLength($linedata) {
     $length = 0;
     foreach ($linedata as $index => $line) {

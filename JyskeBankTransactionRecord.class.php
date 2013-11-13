@@ -1,5 +1,4 @@
 <?php
-
 define('JYSKEBANK_DOMESTIC_TRANSACTION_RECORD_FROM_FINANCE_ACCOUNT', 1);
 define('JYSKEBANK_DOMESTIC_TRANSACTION_RECORD_FROM_BANK_ACCOUNT', 2);
 
@@ -11,7 +10,6 @@ abstract class JyskeBankTransactionRecord extends JyskeBankRecord {
   protected $entryText;
   protected $name;
   protected $reference;
-
   
   // ISO 4217
   protected $currency;

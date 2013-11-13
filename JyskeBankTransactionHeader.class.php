@@ -1,7 +1,5 @@
 <?php
-
 define('JYSKEBANK_HEADER_TYPE', 'IB000000000000');
-
 
 class JyskeBankTransactionHeader extends JyskeBankRecord {
   public function __construct($date = NULL) {

@@ -1,4 +1,5 @@
 <?php
+// Include all classes.
 require_once('JyskeBankTransaction.class.php');
 require_once('JyskeBankRecord.class.php');
 require_once('JyskeBankTransactionFooter.class.php');

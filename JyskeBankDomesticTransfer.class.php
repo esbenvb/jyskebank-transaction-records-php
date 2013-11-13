@@ -1,5 +1,4 @@
 <?php
-
 define('JYSKEBANK_DOMESTIC_TRANSFER_TYPE', 'IB030202000005');
 
 // Transfer types.
@@ -12,7 +11,6 @@ define('JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_SPECIAL', 1);
 define('JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_CHECK', 2);
 
 class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
-
   private $address;
   private $address2;
   private $zipcode;
@@ -84,17 +82,17 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
     }
     return $this;
   }
-  
+
   public function setDocumentReference($info) {
     $this->documentReference = $info;
     return $this;
   }
-  
+
   public function setEntryType($type) {
     $this->entryType = $type;
     return $this;
   }
-  
+
   public function setTransferType($type) {
     $this->transferType = $type;
     if ($type == JYSKEBANK_DOMESTIC_TRANSFER_CHECK) {
@@ -102,9 +100,8 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
     }
     return $this;
   }
-  
+
   protected function recordStructure() {
-    // This is the most basic structure. TODO: Expand support.
     $lines = array();
     
     // Index 1.
@@ -247,8 +244,8 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
         'type' => 'space',
       ),
     );
-    
 
+    // Bank transfer specific lines
     switch ($this->transferType) {
       case JYSKEBANK_DOMESTIC_TRANSFER_BANK:
         // Index 2.
@@ -319,7 +316,8 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
             'type' => 'space',
           ),
         );
-        
+
+        // Add account statement entry line.
         if ($this->entryType == JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_STATEMENT) {
           $lines[0][11] = array(
             'content' => $this->formatText($this->entryText),
@@ -327,8 +325,8 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
             'type' => 'text',
           );
         }
-
-        if ($this->entryType == JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_SPECIAL) {
+        // Add long message.
+        else if ($this->entryType == JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_SPECIAL) {
           // Fill message data for index 1.
           for ($i = 0; $i < 9; $i++) {
             $lines[0][18 + $i]['type'] = 'text';
@@ -394,15 +392,13 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
           }
           
         }
-
         break;
-
-        
+      
       case JYSKEBANK_DOMESTIC_TRANSFER_CHECK:
         //Todo: make check support.
+        break;
         
     }
-    //print_r($lines);
     return $lines;
   }
 }
