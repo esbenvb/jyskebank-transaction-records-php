@@ -167,23 +167,21 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
       ),
       //Should be empty unless  JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_STATEMENT and JYSKEBANK_DOMESTIC_TRANSFER_BANK
       array(
-        //'content' => $this->entryText,
         'length' => 35,
-        //'type' => 'text',
         'type' => 'space',
       ),
       array(
-        'content' => $this->name,
+        'content' => $this->formatText($this->name),
         'length' => 32,
         'type' => 'text',
       ),
       array(
-        'content' => $this->address,
+        'content' => $this->formatText($this->address),
         'length' => 32,
         'type' => 'text',
       ),
       array(
-        'content' => $this->address2,
+        'content' => $this->formatText($this->address2),
         'length' => 32,
         'type' => 'text',
       ),
@@ -193,7 +191,12 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
         'type' => 'number',
       ),
       array(
-        'content' => $this->reference,
+        'content' => $this->formatText($this->city),
+        'length' => 32,
+        'type' => 'text',
+      ),
+      array(
+        'content' => $this->formatText($this->reference),
         'length' => 35,
         'type' => 'text',
       ),
@@ -288,17 +291,17 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
           ),
           // Identification.
           array(
-            'content' => $this->debitorInfo,
+            'content' => $this->formatText($this->debitorInfo),
             'length' => 35,
             'type' => 'text',
           ),
           array(
-            'content' => $this->documentReference,
+            'content' => $this->formatText($this->documentReference),
             'length' => 35,
             'type' => 'text',
           ),
           array(
-            'content' => $this->creditorInfo,
+            'content' => $this->formatText($this->creditorInfo),
             'length' => 35,
             'type' => 'text',
           ),
@@ -319,7 +322,7 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
         
         if ($this->entryType == JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_STATEMENT) {
           $lines[0][11] = array(
-            'content' => $this->entryText,
+            'content' => $this->formatText($this->entryText),
             'length' => 35,
             'type' => 'text',
           );
@@ -396,7 +399,7 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
 
         
       case JYSKEBANK_DOMESTIC_TRANSFER_CHECK:
-        
+        //Todo: make check support.
         
     }
     //print_r($lines);

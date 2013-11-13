@@ -11,7 +11,6 @@ abstract class JyskeBankTransactionRecord extends JyskeBankRecord {
   protected $entryText;
   protected $name;
   protected $reference;
-  protected $message;
 
   
   // ISO 4217
@@ -37,11 +36,6 @@ abstract class JyskeBankTransactionRecord extends JyskeBankRecord {
   
   public function setDate($date) {
     $this->date = $date;
-    return $this;
-  }
-
-  public function setMessage($message) {
-    $this->message = $message;
     return $this;
   }
   

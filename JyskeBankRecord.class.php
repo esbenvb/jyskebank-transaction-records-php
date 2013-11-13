@@ -4,6 +4,9 @@
 abstract class JyskeBankRecord {
   protected $type;
   
+  // The transaction object refering to this record.
+  protected $transaction;
+  
   // Unix timestamp 
   protected $date;
   
@@ -11,6 +14,10 @@ abstract class JyskeBankRecord {
   
   public function __construct($date = NULL) {
     $this->date = $date ? $date : time(); 
+  }
+
+  public function setTransaction($transaction) {
+    $this->transaction = $transaction;
   }
 
   public function generateLines() {
@@ -60,15 +67,12 @@ abstract class JyskeBankRecord {
   }
 
   protected function formatText($text) {
-    //$string = utf8_decode($text);
-    $string = iconv('UTF-8' ,'WINDOWS-1252' ,$string);
-    return $string;
+    return iconv($this->transaction->sourceEncoding, $this->transaction->destinationEncoding, $text);
   }
 
   protected function fitRecordLines($string, $linecount, $linelength) {
     // Convert to ANSI.
-    //$string = utf8_decode($string);
-    $string = iconv('UTF-8' ,'WINDOWS-1252' ,$string);
+    $string = $this->formatText($string);
     // Split into lines.
     $lines = explode("\n", $string);
     $result_lines = array();

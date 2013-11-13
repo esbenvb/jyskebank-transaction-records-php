@@ -6,12 +6,20 @@ class JyskeBankTransaction {
   private $records = array();
   private $date;
   private $sum = 0.0;
-  
+  public $sourceEncoding = 'UTF-8';
+  public $destinationEncoding = 'CP865';
+
   public function __construct($date = NULL) {
     $this->date = $date ? $date : time();
   }
   
+  public function setEncoding($source, $destination) {
+    $this->sourceEncoding = $source;
+    $this->destinationEncoding = $destination;
+  }
+
   public function addRecord(JyskeBankTransactionRecord $record) {
+    $record->setTransaction($this);
     array_push($this->records, $record);
     return $this;
   }
