@@ -17,6 +17,7 @@ class JyskeBankTransaction {
   public function setEncoding($source, $destination) {
     $this->sourceEncoding = $source;
     $this->destinationEncoding = $destination;
+    return $this;
   }
 
   // Add a record to the transaction.

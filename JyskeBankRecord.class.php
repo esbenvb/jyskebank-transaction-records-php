@@ -16,6 +16,7 @@ abstract class JyskeBankRecord {
 
   public function setTransaction($transaction) {
     $this->transaction = $transaction;
+    return $this;
   }
 
   // Generates the line entries for the record.
