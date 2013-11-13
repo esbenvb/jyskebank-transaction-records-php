@@ -57,8 +57,15 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
 
   public function setSpecialMessage($message) {
     $this->specialMessage = $message;
-    $this->specialMessageData = $this->fitRecordLines($message, 41, 35);
-    $this->entryType = JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_SPECIAL;
+    if ($this->transferType == JYSKEBANK_DOMESTIC_TRANSFER_BANK) {
+      $this->specialMessageData = $this->fitRecordLines($message, 41, 35);
+      $this->entryType = JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_SPECIAL;
+    }
+    else if ($this->transferType == JYSKEBANK_DOMESTIC_TRANSFER_CHECK) {
+      $this->specialMessageData = $this->fitRecordLines($message, 10, 35);
+      $this->entryType = JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_CHECK;
+    }
+
     return $this;
   }
   
@@ -393,11 +400,43 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
           
         }
         break;
-      
+
       case JYSKEBANK_DOMESTIC_TRANSFER_CHECK:
-        //Todo: make check support.
+        // Fill message data for index 1.
+        for ($i = 0; $i < 9; $i++) {
+          $lines[0][18 + $i]['type'] = 'text';
+          $lines[0][18 + $i]['content'] = $this->specialMessageData[$i];
+        }
+        $messageLength = $this->recordLinesLength($this->specialMessageData);
+        // Create index 3 if needed.
+        if ($messageLength > 9) {
+          $lines[2] = array(
+            array(
+              'content' => $this->type,
+              'length' => 14,
+              'type' => 'text',
+            ),
+            array(
+              'content' => 3,
+              'length' => 4,
+              'type' => 'number',
+            ),
+          );
+          $lines[2][3]['type'] = 'text';
+          $lines[2][3]['length'] = '35';
+          $lines[2][3]['content'] = $this->specialMessageData[9];
+
+          // Fill message data for index 1.
+          for ($i = 10; $i < 31; $i++) {
+            $lines[2][3 + $i - 9]['type'] = 'space';
+            $lines[2][3 + $i - 9]['length'] = '35';
+          }
+          $lines[2][] = array(
+            'length' => 32,
+            'type' => 'space',
+          );
+        }
         break;
-        
     }
     return $lines;
   }
