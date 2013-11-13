@@ -19,8 +19,8 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
   private $specialMessageData = array('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',);
   private $toReg;
   private $toAccount;
-  private $transferType;
-  private $entryType;
+  private $transferType = JYSKEBANK_DOMESTIC_TRANSFER_BANK;
+  private $entryType = JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_STATEMENT;
   private $debitorInfo = '';
   private $documentReference = '';
   private $creditorInfo = '';
@@ -30,8 +30,6 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
   public function __construct() {
     parent::__construct();
     $this->type = JYSKEBANK_DOMESTIC_TRANSFER_TYPE;
-    $this->transferType = JYSKEBANK_DOMESTIC_TRANSFER_BANK;
-    $this->entryType = JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_STATEMENT;
   }
   
   public function setRecipientAccount($reg, $account) {
