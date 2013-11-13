@@ -255,6 +255,7 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
     // Bank transfer specific lines
     switch ($this->transferType) {
       case JYSKEBANK_DOMESTIC_TRANSFER_BANK:
+        if ($this->recordLinesLength($this->senderData) || $this->debitorInfo || $this->documentReference || $this->creditorInfo)
         // Index 2.
         $lines[1] = array(
           array(
