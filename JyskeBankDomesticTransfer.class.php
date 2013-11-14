@@ -7,7 +7,6 @@ define('JYSKEBANK_DOMESTIC_TRANSFER_BANK', 2);
 
 // Entry types.
 define('JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_STATEMENT', 0);
-define('JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_SPECIAL', 1);
 define('JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_CHECK', 2);
 
 class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
@@ -15,8 +14,8 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
   private $address2;
   private $zipcode;
   private $city;
-  private $specialMessage;
-  private $specialMessageData = array('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',);
+  private $extendedMessage;
+  private $extendedMessageData = array('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',);
   private $toReg;
   private $toAccount;
   private $transferType = JYSKEBANK_DOMESTIC_TRANSFER_BANK;
@@ -53,15 +52,13 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
     return $this;
   }  
 
-  public function setSpecialMessage($message) {
-    $this->specialMessage = $message;
+  public function setExtendedMessage($message) {
+    $this->extendedMessage = $message;
     if ($this->transferType == JYSKEBANK_DOMESTIC_TRANSFER_BANK) {
-      $this->specialMessageData = $this->fitRecordLines($message, 41, 35);
-      $this->entryType = JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_SPECIAL;
+      $this->extendedMessageData = $this->fitRecordLines($message, 41, 35);
     }
     else if ($this->transferType == JYSKEBANK_DOMESTIC_TRANSFER_CHECK) {
-      $this->specialMessageData = $this->fitRecordLines($message, 10, 35);
-      $this->entryType = JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_CHECK;
+      $this->extendedMessageData = $this->fitRecordLines($message, 10, 35);
     }
 
     return $this;
@@ -93,15 +90,13 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
     return $this;
   }
 
-  public function setEntryType($type) {
-    $this->entryType = $type;
-    return $this;
-  }
-
   public function setTransferType($type) {
     $this->transferType = $type;
     if ($type == JYSKEBANK_DOMESTIC_TRANSFER_CHECK) {
-      $this->setEntryType(JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_CHECK);
+      $this->entryType = JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_CHECK;
+    }
+    else if ($type == JYSKEBANK_DOMESTIC_TRANSFER_BANK) {
+      $this->entryType =JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_STATEMENT;
     }
     return $this;
   }
@@ -324,89 +319,85 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
         );
 
         // Add account statement entry line.
-        if ($this->entryType == JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_STATEMENT) {
-          $lines[0][11] = array(
-            'content' => $this->formatText($this->entryText),
-            'length' => 35,
-            'type' => 'text',
+        $lines[0][11] = array(
+          'content' => $this->formatText($this->entryText),
+          'length' => 35,
+          'type' => 'text',
+        );
+        // Add long message.
+        // Fill message data for index 1.
+        for ($i = 0; $i < 9; $i++) {
+          $lines[0][18 + $i]['type'] = 'text';
+          $lines[0][18 + $i]['content'] = $this->extendedMessageData[$i];
+        }
+
+        $messageLength = $this->recordLinesLength($this->extendedMessageData);
+        // Create index 3 if needed.
+        if ($messageLength > 9) {
+          $lines[2] = array(
+            array(
+              'content' => $this->type,
+              'length' => 14,
+              'type' => 'text',
+            ),
+            array(
+              'content' => 3,
+              'length' => 4,
+              'type' => 'number',
+            ),
+          );
+          // Fill message data for index 3.
+          for ($i = 9; $i < 31; $i++) {
+            $lines[2][3 + $i - 9]['type'] = 'text';
+            $lines[2][3 + $i - 9]['length'] = '35';
+            $lines[2][3 + $i - 9]['content'] = $this->extendedMessageData[$i];
+          }
+          $lines[2][] = array(
+            'length' => 32,
+            'type' => 'space',
           );
         }
-        // Add long message.
-        else if ($this->entryType == JYSKEBANK_DOMESTIC_TRANSFER_ENTRY_SPECIAL) {
-          // Fill message data for index 1.
-          for ($i = 0; $i < 9; $i++) {
-            $lines[0][18 + $i]['type'] = 'text';
-            $lines[0][18 + $i]['content'] = $this->specialMessageData[$i];
+        // Create index 4 if needed.
+        if ($messageLength > 31) {
+          $lines[3] = array(
+            array(
+              'content' => $this->type,
+              'length' => 14,
+              'type' => 'text',
+            ),
+            array(
+              'content' => 4,
+              'length' => 4,
+              'type' => 'number',
+            ),
+          );
+          // Fill message data for index 4.
+          for ($i = 31; $i < 41; $i++) {
+            $lines[3][3 + $i - 31]['type'] = 'text';
+            $lines[3][3 + $i - 31]['length'] = '35';
+            $lines[3][3 + $i - 31]['content'] = $this->extendedMessageData[$i];
           }
-
-          $messageLength = $this->recordLinesLength($this->specialMessageData);
-          // Create index 3 if needed.
-          if ($messageLength > 9) {
-            $lines[2] = array(
-              array(
-                'content' => $this->type,
-                'length' => 14,
-                'type' => 'text',
-              ),
-              array(
-                'content' => 3,
-                'length' => 4,
-                'type' => 'number',
-              ),
-            );
-            // Fill message data for index 1.
-            for ($i = 9; $i < 31; $i++) {
-              $lines[2][3 + $i - 9]['type'] = 'text';
-              $lines[2][3 + $i - 9]['length'] = '35';
-              $lines[2][3 + $i - 9]['content'] = $this->specialMessageData[$i];
-            }
-            $lines[2][] = array(
-              'length' => 32,
-              'type' => 'space',
-            );
-          }
-          // Create index 4 if needed.
-          if ($messageLength > 31) {
-            $lines[3] = array(
-              array(
-                'content' => $this->type,
-                'length' => 14,
-                'type' => 'text',
-              ),
-              array(
-                'content' => 4,
-                'length' => 4,
-                'type' => 'number',
-              ),
-            );
-            // Fill message data for index 1.
-            for ($i = 31; $i < 41; $i++) {
-              $lines[3][3 + $i - 31]['type'] = 'text';
-              $lines[3][3 + $i - 31]['length'] = '35';
-              $lines[3][3 + $i - 31]['content'] = $this->specialMessageData[$i];
-            }
-            for ($i = 0; $i < 12; $i++) {
-              $lines[3][] = array(
-                'length' => 35,
-                'type' => 'space',
-              );
-            }
+          for ($i = 0; $i < 12; $i++) {
             $lines[3][] = array(
-              'length' => 32,
+              'length' => 35,
               'type' => 'space',
             );
           }
-          
+          $lines[3][] = array(
+            'length' => 32,
+            'type' => 'space',
+          );
         }
+
         break;
 
       case JYSKEBANK_DOMESTIC_TRANSFER_CHECK:
         // Fill message data for index 1.
         for ($i = 0; $i < 9; $i++) {
           $lines[0][18 + $i]['type'] = 'text';
-          $lines[0][18 + $i]['content'] = $this->specialMessageData[$i];
+          $lines[0][18 + $i]['content'] = $this->extendedMessageData[$i];
         }
-        $messageLength = $this->recordLinesLength($this->specialMessageData);
+        $messageLength = $this->recordLinesLength($this->extendedMessageData);
         // Create index 3 if needed.
         if ($messageLength > 9) {
           $lines[2] = array(
@@ -423,7 +414,7 @@ class JyskeBankDomesticTransfer extends JyskeBankTransactionRecord {
           );
           $lines[2][3]['type'] = 'text';
           $lines[2][3]['length'] = '35';
-          $lines[2][3]['content'] = $this->specialMessageData[9];
+          $lines[2][3]['content'] = $this->extendedMessageData[9];
 
           // Fill message data for index 1.
           for ($i = 10; $i < 31; $i++) {

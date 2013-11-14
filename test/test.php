@@ -18,7 +18,7 @@ $dt1->setAmount(12312, 'DKK')
   ->setDebitorInfo('UID: 7764')
   ->setSenderInfo('ff fsdf saf sadfsd fdjsklfjsd 12345678912345678912345678915646zzzzzzzzzzzz fdsfds fds fdsf fdsafdsagdfg dfggdsfgfds gfd 2342dsfdsfsd sdfdagsdfga23r2323 sf23g ae22 gwr g 34g2rw')
   ->setDocumentReference(0x1231)
-  ->setSpecialMessage('Lorem ipsum dolor sit amet, c æ ø  dfsf f sdøf onsectetur å  adipisicing elit, sed do  ÆØ  tempor incididunt ut labore et dolore Ååå aliqua. Ut enim åminim veniam, å quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+  ->setExtendedMessage('Lorem ipsum dolor sit amet, c æ ø  dfsf f sdøf onsectetur å  adipisicing elit, sed do  ÆØ  tempor incididunt ut labore et dolore Ååå aliqua. Ut enim åminim veniam, å quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 
 Afsnit 1.10.32 fra "de Finibus Bonorum et Malorum", skrevet af Cicero i 45 f.kr.
 
@@ -40,7 +40,7 @@ $dt2->setAmount(1666, 'DKK')
   ->setSource('0401', '133742', JYSKEBANK_DOMESTIC_TRANSACTION_RECORD_FROM_BANK_ACCOUNT)
   ->setRecipientAccount('1111', 3333333)
   ->setEntryText('asdsadsaaDFDS DSAFSAD FSADF SA')
-  ->setSpecialMessage('Lorem ipsum dolor sit amet, c æ ø  dfsf f sdøf onsectetur å  adipisicing elit, sed do  ÆØ  tempor incididunt ut labore et dolore Ååå aliqua. Ut enim åminim veniam, å quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+  ->setExtendedMessage('Lorem ipsum dolor sit amet, c æ ø  dfsf f sdøf onsectetur å  adipisicing elit, sed do  ÆØ  tempor incididunt ut labore et dolore Ååå aliqua. Ut enim åminim veniam, å quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 
 Afsnit 1.10.32 fra "de Finibus Bonorum et Malorum", skrevet af Cicero i 45 f.kr.
 
@@ -62,7 +62,7 @@ $dt2->setAmount(1666, 'DKK')
   ->setSource('0401', '133742', JYSKEBANK_DOMESTIC_TRANSACTION_RECORD_FROM_BANK_ACCOUNT)
   ->setRecipientAccount('1111', 3333333)
   ->setEntryText('asdsadsaaDFDS DSAFSAD FSADF SA')
-  ->setSpecialMessage('Lorem ipsum dolor sit amet, c æ ø  dfsf f sdøf onsectetur å  adipisicing elit, sed do  ÆØ  tempor i"')
+  ->setExtendedMessage('Lorem ipsum dolor sit amet, c æ ø  dfsf f sdøf onsectetur å  adipisicing elit, sed do  ÆØ  tempor i"')
     
   ->setRecipient('Din far', array(
     'address' => 'abehulen 1',
@@ -106,7 +106,7 @@ SENDER INFO LINE 7
 SENDER INFO LINE 8
 SENDER INFO LINE 9')
   ->setDocumentReference('DOCUMENT REFERENCE HERE')
-  ->setSpecialMessage('SPECIAL MESSAGE LINE 1
+  ->setExtendedMessage('SPECIAL MESSAGE LINE 1
 SPECIAL MESSAGE LINE 2
 SPECIAL MESSAGE LINE 3
 SPECIAL MESSAGE LINE 4
@@ -187,30 +187,5 @@ SENDER INFO LINE 9')
 
 
 $t->finish();
-//print_r($t);
 
 echo $t->export();
-
-
-//print utf8_decode('Storebælt TDC totalløsninger');
-
-
-//print iconv('UTF-8' ,'CP865' ,'Storebælt TDC totalløsninger');
-
-
-return;
-$text = 'hej med dig
-her er en lang tekst 1234567890qwertyuiopasdfghjklzxcvbnmz godt
-kan blive meget
-laengere men ogsaa kortrere.
-Det er spaendende at
-se hvad der sker nu vi ser hvad der sker maaske bliver det fedt .';
-
-
-$text = "hej med dig";
-  //123";
-var_export(fitRecordLines($text, 5, 35));
-
-
-
-
